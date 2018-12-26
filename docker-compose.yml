@@ -1,0 +1,67 @@
+version: '3'
+services:
+  mongo:
+    image: mongo:rc-xenial
+    restart: always
+    ports:
+      - 27017:27017
+  
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    depends_on:
+      - mongo
+  
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5673:5672"
+      - "15672:15672"
+    stdin_open: true
+    tty: true
+
+  producer:
+    build: producer
+    volumes:
+      - ./producer/src/:/project
+    command: python3 main.py
+    env_file:
+      - config.env
+    links:
+      - rabbitmq
+    depends_on:
+      - rabbitmq
+    stdin_open: true
+    tty: true
+
+  worker:
+    build: worker
+    restart: always
+    volumes:
+      - ./worker/src/:/project
+    command: python3 main.py
+    env_file:
+      - config.env
+    links:
+      - rabbitmq
+      - mongo
+    depends_on:
+      - rabbitmq
+      - mongo
+    stdin_open: true
+    tty: true
+
+  api:
+    build: api
+    restart: always
+    volumes:
+      - ./api/src/:/project/
+    command: gunicorn -b 0.0.0.0:8000 --access-logfile - --error-logfile - api
+    ports:
+      - 8000:8000
+    links:
+      - mongo:mongo
+    depends_on:
+      - mongo
