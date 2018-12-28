@@ -1,4 +1,4 @@
-version: '3'
+version: '2.1'
 services:
   mongo:
     image: mongo:rc-xenial
@@ -21,6 +21,14 @@ services:
       - "15672:15672"
     stdin_open: true
     tty: true
+    healthcheck:
+      timeout: 5s
+      interval: 5s
+      retries: 5
+      test:
+        - "CMD"
+        - "rabbitmqctl"
+        - "status"
 
   producer:
     build: producer
@@ -32,7 +40,8 @@ services:
     links:
       - rabbitmq
     depends_on:
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
     stdin_open: true
     tty: true
 
@@ -48,8 +57,10 @@ services:
       - rabbitmq
       - mongo
     depends_on:
-      - rabbitmq
-      - mongo
+      rabbitmq:
+        condition: service_healthy
+      mongo:
+        condition: service_started
     stdin_open: true
     tty: true
 
