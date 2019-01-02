@@ -39,6 +39,7 @@ services:
       - config.env
     links:
       - rabbitmq
+      - api
     depends_on:
       rabbitmq:
         condition: service_healthy

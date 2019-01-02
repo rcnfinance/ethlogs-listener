@@ -56,3 +56,13 @@ class Block(Document):
     transactions = ListField(StringField(), required=True)
     transactions_root = StringField(required=True)
     uncles = ListField(StringField(), required=True)
+
+    meta = {
+        "indexes": [
+            "hash",
+            "miner",
+            "nonce",
+            "number",
+            "parent_hash"
+        ]
+    }

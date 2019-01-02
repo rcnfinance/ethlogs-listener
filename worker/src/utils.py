@@ -4,6 +4,7 @@ import logging
 from bloom import build_bloom_filter
 from bloom import verify_bloom
 from models import LogEvent
+from models import Block
 
 
 logger = logging.getLogger("worker.utils")
@@ -56,9 +57,39 @@ def save_events(logs):
         log_event.save()
 
 
+def save_block(block_data):
+    block = Block()
+
+    block.author = block_data.author
+    block.difficulty = block_data.difficulty
+    block.extra_data = block_data.extraData.hex()
+    block.gas_limit = block_data.gasLimit
+    block.gas_used = block_data.gasUsed
+    block.hash = block_data.hash.hex()
+    block.logs_bloom = block_data.logsBloom.hex()
+    block.miner = block_data.miner
+    block.mix_hash = block_data.mixHash.hex()
+    block.nonce = block_data.nonce.hex()
+    block.number = block_data.number
+    block.parent_hash = block_data.parentHash.hex()
+    block.receipts_root = block_data.receiptsRoot.hex()
+    # block.seal_fields = [seal_field for seal_field in block_data.sealFields]
+    block.sha3_uncles = block_data.sha3Uncles.hex()
+    block.size = block_data.size
+    block.state_root = block_data.stateRoot.hex()
+    block.timestamp = block_data.timestamp
+    block.total_difficulty = block_data.totalDifficulty
+    block.transactions = [tx.hex() for tx in block_data.transactions]
+    block.transactions_root = block_data.transactionsRoot.hex()
+    block.uncles = [uncle.hex() for uncle in block_data.uncles]
+
+    block.save()
+
+
 def handle_message(block_number):
     EMPTY_BLOOM = "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
     block = get_block(block_number)
+    save_block(block)
     block_bloom = block.get("logsBloom").hex()
 
     if block_bloom != EMPTY_BLOOM:
