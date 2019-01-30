@@ -4,9 +4,9 @@ from graceful.resources.generic import RetrieveAPI
 from graceful.resources.generic import PaginatedListAPI
 from graceful.parameters import StringParam
 import falcon
-from serializers import LogEventSerializer
+from serializers import LogSerializer
 from serializers import BlockSerializer
-from models import LogEvent
+from models import Log
 from models import Block
 from utils import get_last_block_number
 
@@ -14,18 +14,23 @@ from utils import get_last_block_number
 logger = logging.getLogger(__name__)
 
 
-class LogEventList(PaginatedListAPI):
-    serializer = LogEventSerializer()
+class LogList(PaginatedListAPI):
+    serializer = LogSerializer()
 
     address = StringParam("address filter")
     block_hash = StringParam("block_hash filter")
-    block_number = StringParam(" filter")
+    block_number = StringParam("block_number filter")
     data = StringParam("address filter")
     topic0 = StringParam("topic0 filter")
     topic1 = StringParam("topic1 filter")
     topic2 = StringParam("topic2 filter")
     topic3 = StringParam("topic3 filter")
     transaction_hash = StringParam("transaction_hash filter")
+
+    block_number__lt = StringParam("block_number lt")
+    block_number__lte = StringParam("block_number lte")
+    block_number__gt = StringParam("block_number gt")
+    block_number__gte = StringParam("block_number gte")
 
     def list(self, params, meta, **kwargs):
         filter_params = params.copy()
@@ -36,7 +41,7 @@ class LogEventList(PaginatedListAPI):
 
         offset = page * page_size
 
-        return LogEvent.objects.filter(**filter_params).skip(offset).limit(page_size)
+        return Log.objects.filter(**filter_params).skip(offset).limit(page_size)
 
 
 class BlockList(PaginatedListAPI):
@@ -54,8 +59,8 @@ class BlockList(PaginatedListAPI):
         return Block.objects.filter(**filter_params).skip(offset).limit(page_size)
 
 
-class LogEventItem(RetrieveAPI):
-    serializer = LogEventSerializer()
+class BlockItem(RetrieveAPI):
+    serializer = BlockSerializer()
 
     def retrieve(self, params, meta, block_id):
         try:
@@ -67,16 +72,16 @@ class LogEventItem(RetrieveAPI):
             )
 
 
-class BlockItem(RetrieveAPI):
-    serializer = BlockSerializer()
+class LogItem(RetrieveAPI):
+    serializer = LogSerializer()
 
-    def retrieve(self, params, meta, id_log_event):
+    def retrieve(self, params, meta, log_id):
         try:
-            return LogEvent.objects.get(id=id_log_event)
-        except LogEvent.DoesNotExist:
+            return Log.objects.get(id=log_id)
+        except Log.DoesNotExist:
             raise falcon.HTTPNotFound(
                 title='Log Event does not exists',
-                description='Log Event with id={} does not exists'.format(id_log_event)
+                description='Log Event with id={} does not exists'.format(log_id)
             )
 
 

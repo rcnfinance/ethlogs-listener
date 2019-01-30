@@ -10,7 +10,7 @@ DB_HOST = os.environ.get("MONGO_HOST") or "mongo"
 connection = connect(db=DB_NAME, host=DB_HOST)
 
 
-class LogEvent(Document):
+class Log(Document):
     address = StringField(required=True)
     block_hash = StringField(required=True)
     block_number = IntField(required=True)
@@ -29,6 +29,7 @@ class LogEvent(Document):
             "topic1",
             "topic2",
             "topic3",
+            "transaction_hash"
         ]
     }
 
@@ -59,6 +60,7 @@ class Block(Document):
 
     meta = {
         "indexes": [
+            "author",
             "hash",
             "miner",
             "nonce",

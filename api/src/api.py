@@ -1,7 +1,7 @@
 import falcon
 
-from resources import LogEventItem
-from resources import LogEventList
+from resources import LogItem
+from resources import LogList
 from resources import StatusResource
 from resources import BlockList
 from resources import BlockItem
@@ -13,8 +13,8 @@ cors = CORS(allow_all_origins=True)
 api = application = falcon.API(middleware=[cors.middleware])
 
 
-api.add_route("/v1/log_event/", LogEventList())
-api.add_route("/v1/log_event/{id_log_event}", LogEventItem())
+api.add_route("/v1/logs/", LogList())
+api.add_route("/v1/logs/{log_id}", LogItem())
 
 api.add_route("/v1/blocks/", BlockList())
 api.add_route("/v1/blocks/{block_id}/", BlockItem())

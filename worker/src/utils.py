@@ -3,7 +3,7 @@ import web3
 import logging
 from bloom import build_bloom_filter
 from bloom import verify_bloom
-from models import LogEvent
+from models import Log
 from models import Block
 
 
@@ -39,7 +39,7 @@ def get_block_logs(block_number):
 
 def save_events(logs):
     for log in logs:
-        log_event = LogEvent()
+        log_event = Log()
         log_event.address = log.get("address")
         log_event.block_hash = log.get("blockHash").hex()
         log_event.block_number = log.get("blockNumber")

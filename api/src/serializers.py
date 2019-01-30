@@ -2,7 +2,7 @@ from graceful.serializers import BaseSerializer
 from graceful.fields import RawField, StringField
 
 
-class LogEventSerializer(BaseSerializer):
+class LogSerializer(BaseSerializer):
     id = StringField("id")
     address = RawField("address")
     block_hash = RawField("block_hash")
