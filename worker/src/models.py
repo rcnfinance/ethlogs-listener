@@ -45,7 +45,7 @@ class Block(Document):
     miner = StringField(required=True)
     mix_hash = StringField(required=True)
     nonce = StringField(required=True)
-    number = IntField(required=True)
+    number = IntField(required=True, primary=True)
     parent_hash = StringField(required=True)
     receipts_root = StringField(required=True)
     seal_fields = ListField(StringField())

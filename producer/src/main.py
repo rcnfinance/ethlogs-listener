@@ -34,4 +34,4 @@ listener = BlockListener(
     QUEUE_MAX_ITEMS
 )
 
-listener.run2()
+listener.run()

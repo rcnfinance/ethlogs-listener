@@ -16,6 +16,7 @@ services:
   
   rabbitmq:
     image: rabbitmq:3-management
+    restart: always
     ports:
       - "5673:5672"
       - "15672:15672"
@@ -32,6 +33,7 @@ services:
 
   producer:
     build: producer
+    restart: always
     volumes:
       - ./producer/src/:/project
     command: python3 main.py
@@ -63,7 +65,7 @@ services:
       mongo:
         condition: service_started
     stdin_open: true
-    tty: true
+    # tty: true
 
   api:
     build: api
