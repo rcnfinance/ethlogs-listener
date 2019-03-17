@@ -10,7 +10,7 @@ DB_HOST = os.environ.get("MONGO_HOST") or "mongo"
 connection = connect(db=DB_NAME, host=DB_HOST)
 
 
-class LogEvent(Document):
+class Log(Document):
     address = StringField(required=True)
     block_hash = StringField(required=True)
     block_number = IntField(required=True)
@@ -44,15 +44,25 @@ class Block(Document):
     miner = StringField(required=True)
     mix_hash = StringField(required=True)
     nonce = StringField(required=True)
-    number = IntField(required=True)
+    number = IntField(required=True, primary=True)
     parent_hash = StringField(required=True)
     receipts_root = StringField(required=True)
-    seal_fields = ListField(StringField(), required=True)
+    seal_fields = ListField(StringField())
     sha3_uncles = StringField(required=True)
     size = IntField(required=True)
     state_root = StringField(required=True)
     timestamp = IntField(required=True)
     total_difficulty = IntField(required=True)
-    transactions = ListField(StringField(), required=True)
+    transactions = ListField(StringField())
     transactions_root = StringField(required=True)
     uncles = ListField(StringField(), required=True)
+
+    meta = {
+        "indexes": [
+            "hash",
+            "miner",
+            "nonce",
+            "number",
+            "parent_hash"
+        ]
+    }

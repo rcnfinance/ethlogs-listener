@@ -17,7 +17,6 @@ QUEUE_MAX_ITEMS = int(os.environ.get("QUEUE_MAX_ITEMS", 100))
 CONTRACTS = os.environ.get("CONTRACTS")
 if CONTRACTS:
     CONTRACTS = CONTRACTS.split(",")
-MAGIC_NUMBER = (QUEUE_MAX_ITEMS * 10) / 100
 
 RABBIT_URL = "amqp://{user}:{password}@{server}:{port}/{vhost}".format(
     user=USER,
