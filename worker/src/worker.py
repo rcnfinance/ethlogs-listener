@@ -20,7 +20,7 @@ class Worker():
         self.connection = pika.BlockingConnection(self.url_parameters)
         self.channel = self.connection.channel()
 
-        self.channel.basic_consume(self.__on_message, self.queue_name)
+        self.channel.basic_consume(self.queue_name, self.__on_message)
 
     def send_block_to_queue(self, block_number):
         channel = self.connection.channel()

@@ -64,7 +64,7 @@ class BlockItem(RetrieveAPI):
 
     def retrieve(self, params, meta, block_id):
         try:
-            return Block.objects.get(id=block_id)
+            return Block.objects.get(number=block_id)
         except Block.DoesNotExist:
             raise falcon.HTTPNotFound(
                 title='Block does not exists',

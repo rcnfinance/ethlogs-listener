@@ -7,11 +7,10 @@ from utils import get_last_block_processed
 
 logger = logging.getLogger("block_listener")
 
-SLEEP_SEC = 2
 SLEEP_NEW_BLOCKS = int(os.environ.get("SLEEP_NEW_BLOCKS", 5))
 SLEEP_SEC_QUEUE_FULL = int(os.environ.get("SLEEP_SEC_QUEUE_FULL", 30))
 MIN_QUEUE_SIZE = int(os.environ.get("MIN_QUEUE_SIZE", 25))
-SYNC_FROM_BLOCK = int(os.environ.get("SYNC_FROM_BLOCK"))
+SYNC_FROM_BLOCK = int(os.environ.get("SYNC_FROM_BLOCK", 0))
 
 
 class BlockListener():
