@@ -31,14 +31,8 @@ class BlockListener():
         self.channel.confirm_delivery()
 
     def publish_block(self, block_number):
-        published = self.channel.basic_publish("", self.q_name, str(block_number))
-
-        if published:
-            logger.info("Message has been delivered: {}".format(block_number))
-        else:
-            logger.info("Message not delivered: {}".format(block_number))
-
-        return published
+        self.channel.basic_publish("", self.q_name, str(block_number))
+        logger.info("Message has been delivered: {}".format(block_number))
 
     def run(self):
         last_block_enqueued = SYNC_FROM_BLOCK

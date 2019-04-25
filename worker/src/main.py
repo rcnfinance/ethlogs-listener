@@ -2,8 +2,11 @@ import os
 import logging
 from worker import Worker
 
-logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.DEBUG)
 logger = logging.getLogger("main")
+logging.getLogger('pika').setLevel(logging.INFO)
+logging.getLogger('web3').setLevel(logging.INFO)
+logging.getLogger('urllib3').setLevel(logging.INFO)
 
 
 USER = os.environ.get("RABBIT_USER", "guest")
