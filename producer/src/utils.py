@@ -6,7 +6,7 @@ import web3
 url_node = os.environ.get("URL_NODE", "https://ropsten.node.rcn.loans:8545/")
 node_provider = web3.HTTPProvider(url_node)
 w3 = web3.Web3(node_provider)
-ENDPOINT_STATUS_LISTENER = "http://api:8000/status/"
+ENDPOINT_STATUS_LISTENER = os.environ.get("STATUS_API_URL", "http://api:8000/status")
 
 
 def get_last_block_number():

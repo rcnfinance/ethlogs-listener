@@ -4,3 +4,4 @@ gunicorn
 mongoengine
 falcon-cors
 web3
+mimeparse

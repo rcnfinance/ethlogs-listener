@@ -20,7 +20,7 @@ class LogList(PaginatedListAPI):
     address = StringParam("address filter")
     block_hash = StringParam("block_hash filter")
     block_number = StringParam("block_number filter")
-    data = StringParam("address filter")
+    data = StringParam("data filter")
     topic0 = StringParam("topic0 filter")
     topic1 = StringParam("topic1 filter")
     topic2 = StringParam("topic2 filter")

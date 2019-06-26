@@ -13,7 +13,7 @@ connection = connect(db=DB_NAME, host=DB_HOST)
 class Log(Document):
     address = StringField(required=True)
     block_hash = StringField(required=True)
-    block_number = IntField(required=True)
+    block_number = IntField(required=True, primary=True)
     data = StringField(required=True)
     topic0 = StringField(required=False, null=True)
     topic1 = StringField(required=False, null=True)
