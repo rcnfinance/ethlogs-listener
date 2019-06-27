@@ -20,27 +20,22 @@ class Worker():
         self.connection = pika.BlockingConnection(self.url_parameters)
         self.channel = self.connection.channel()
 
-        self.channel.basic_consume(self.__on_message, self.queue_name)
+        self.channel.basic_consume(self.queue_name, self.__on_message)
 
     def send_block_to_queue(self, block_number):
         channel = self.connection.channel()
         q = channel.queue_declare(self.queue_name, arguments={"x-max-priority": 10})
         q_name = q.method.queue
 
-        # Turn on delivery confirmations
         channel.confirm_delivery()
 
-        published = False
-
-        while not published:
-            published = channel.basic_publish(
-                "",
-                q_name,
-                str(block_number),
-                properties=pika.BasicProperties(priority=10)
-            )
-
-        return published
+        channel.basic_publish(
+            "",
+            q_name,
+            str(block_number),
+            properties=pika.BasicProperties(priority=10)
+        )
+        logger.debug("block {} was published".format(block_number))
 
     def handle_message(self, block_number):
         block = get_block_header(block_number)
@@ -55,6 +50,7 @@ class Worker():
             logger.debug("[*] ant: {}, hash:[{}], parent_hash:[{}]".format(ant.number, ant.hash, ant.parent_hash))
             logger.debug("ok_ant: {}".format(ok_ant))
         except Block.DoesNotExist:
+            logger.debug("block {} does not exists".format(block_number - 1))
             ant_exist = False
 
         try:
@@ -65,16 +61,15 @@ class Worker():
             logger.debug("[*] pos: {}, hash:[{}], parent_hash:[{}]".format(pos.number, pos.hash, pos.parent_hash))
             logger.debug("ok_pos: {}".format(ok_pos))
         except Block.DoesNotExist:
+            logger.debug("block {} does not exists".format(block_number + 1))
             pos_exist = False
 
         if ant_exist and not ok_ant:
             logger.debug("sending to queue: {}".format(ant.number))
-            sent = self.send_block_to_queue(ant.number)
-            logger.debug("sent?: {}".format(sent))
+            self.send_block_to_queue(ant.number)
         if pos_exist and not ok_pos:
             logger.debug("sending to queue: {}".format(pos.number))
-            sent = self.send_block_to_queue(pos.number)
-            logger.debug("sent?: {}".format(sent))
+            self.send_block_to_queue(pos.number)
 
         if ok_ant and ok_pos:
             self.save_block(block)

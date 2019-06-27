@@ -1,5 +1,9 @@
 version: '2.1'
 services:
+  redis:
+    image: redis
+    ports:
+      - 6379:6379
   mongo:
     image: mongo:rc-xenial
     restart: always
@@ -46,7 +50,7 @@ services:
       rabbitmq:
         condition: service_healthy
     stdin_open: true
-    tty: true
+    # tty: true
 
   worker:
     build: worker
@@ -79,3 +83,5 @@ services:
       - mongo:mongo
     depends_on:
       - mongo
+    env_file:
+      - config.env

@@ -20,7 +20,7 @@ class LogList(PaginatedListAPI):
     address = StringParam("address filter")
     block_hash = StringParam("block_hash filter")
     block_number = StringParam("block_number filter")
-    data = StringParam("address filter")
+    data = StringParam("data filter")
     topic0 = StringParam("topic0 filter")
     topic1 = StringParam("topic1 filter")
     topic2 = StringParam("topic2 filter")
@@ -64,7 +64,7 @@ class BlockItem(RetrieveAPI):
 
     def retrieve(self, params, meta, block_id):
         try:
-            return Block.objects.get(id=block_id)
+            return Block.objects.get(number=block_id)
         except Block.DoesNotExist:
             raise falcon.HTTPNotFound(
                 title='Block does not exists',
