@@ -91,29 +91,29 @@ class Worker():
 
     def save_block(self, block_data):
         try:
-            block = Block.objects.get(number=block_data.number)
+            block = Block.objects.get(number=str(block_data.number))
         except Block.DoesNotExist:
             block = Block()
 
         block.author = block_data.author
-        block.difficulty = block_data.difficulty
+        block.difficulty = str(block_data.difficulty)
         block.extra_data = block_data.extraData.hex()
-        block.gas_limit = block_data.gasLimit
-        block.gas_used = block_data.gasUsed
+        block.gas_limit = str(block_data.gasLimit)
+        block.gas_used = str(block_data.gasUsed)
         block.hash = block_data.hash.hex()
         block.logs_bloom = block_data.logsBloom.hex()
         block.miner = block_data.miner
         block.mix_hash = block_data.mixHash.hex()
         block.nonce = block_data.nonce.hex()
-        block.number = block_data.number
+        block.number = str(block_data.number)
         block.parent_hash = block_data.parentHash.hex()
         block.receipts_root = block_data.receiptsRoot.hex()
         # block.seal_fields = [seal_field for seal_field in block_data.sealFields]
         block.sha3_uncles = block_data.sha3Uncles.hex()
-        block.size = block_data.size
+        block.size = str(block_data.size)
         block.state_root = block_data.stateRoot.hex()
-        block.timestamp = block_data.timestamp
-        block.total_difficulty = block_data.totalDifficulty
+        block.timestamp = str(block_data.timestamp)
+        block.total_difficulty = str(block_data.totalDifficulty)
         block.transactions = [tx.hex() for tx in block_data.transactions]
         block.transactions_root = block_data.transactionsRoot.hex()
         block.uncles = [uncle.hex() for uncle in block_data.uncles]
@@ -133,7 +133,7 @@ class Worker():
             log_event = Log()
             log_event.address = log.get("address")
             log_event.block_hash = log.get("blockHash").hex()
-            log_event.block_number = log.get("blockNumber")
+            log_event.block_number = str(log.get("blockNumber"))
             log_event.data = log.get("data")
             topics = [topic.hex() for topic in log.get("topics")]
             try:

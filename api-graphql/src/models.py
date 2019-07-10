@@ -3,6 +3,8 @@ from mongoengine import StringField
 from mongoengine import ListField
 from mongoengine import Document
 from mongoengine import connect
+from mongoengine import queryset_manager
+
 
 DB_NAME = os.environ.get("MONGO_DB") or "events"
 DB_HOST = os.environ.get("MONGO_HOST") or "mongo"
@@ -31,6 +33,9 @@ class Log(Document):
             "transaction_hash"
         ]
     }
+
+    def __str__(self):
+        return "Log(block_number:{},transaction_hash:{}, topic0:{})".format(self.block_number, self.transaction_hash, self.topic0)
 
 
 class Block(Document):
@@ -68,3 +73,6 @@ class Block(Document):
         ],
         'ordering': ['-number']
     }
+
+    def __str__(self):
+        return "Block: {}".format(self.number)

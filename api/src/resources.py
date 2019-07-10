@@ -87,10 +87,10 @@ class LogItem(RetrieveAPI):
 
 class StatusResource(object):
     def on_get(self, req, resp):
-        last_block_mined = get_last_block_number()
+        last_block_mined = int(get_last_block_number())
         last_block_processed = Block.objects.order_by("-number").limit(1).first()
         if last_block_processed:
-            last_block_processed = last_block_processed.number
+            last_block_processed = int(last_block_processed.number)
 
             is_sync = (last_block_mined - last_block_processed) < 5
             data = {
