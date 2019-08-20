@@ -127,6 +127,11 @@ class Query(graphene.ObjectType):
         number=graphene.String(required=False),
         parent_hash=graphene.String(required=False),
 
+        number__gt=graphene.String(required=False, name="number__gt"),
+        number__gte=graphene.String(required=False, name="number__gte"),
+        number__lt=graphene.String(required=False, name="number__lt"),
+        number__lte=graphene.String(required=False, name="number__lte"),
+
         first=graphene.Int(required=False),
         skip=graphene.Int(required=False)
     )
@@ -176,17 +181,20 @@ class Query(graphene.ObjectType):
             blocks = blocks.limit(params.get("first"))
         blocks = list(blocks)
 
-        min_block, max_block = blocks[-1].number, blocks[0].number
-        blocks = {block.number: block for block in blocks}
+        if blocks:
+            min_block, max_block = blocks[-1].number, blocks[0].number
+            blocks = {block.number: block for block in blocks}
 
-        logs = list(logs.filter(block_number__gte=min_block, block_number__lte=max_block))
+            logs = list(logs.filter(block_number__gte=min_block, block_number__lte=max_block))
 
-        logs_groupby_number = itertools.groupby(logs, key=itemgetter("block_number"))
+            logs_groupby_number = itertools.groupby(logs, key=itemgetter("block_number"))
 
-        for number, log_group in logs_groupby_number:
-            blocks.get(number).logs = list(log_group)
+            for number, log_group in logs_groupby_number:
+                blocks.get(number).logs = list(log_group)
 
-        a = [block for number, block in blocks.items()]
-        return a
+            a = [block for number, block in blocks.items()]
+            return a
+        else:
+            return []
 
 schema = graphene.Schema(query=Query)
