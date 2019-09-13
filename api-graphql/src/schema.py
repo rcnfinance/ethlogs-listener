@@ -146,16 +146,18 @@ class Query(graphene.ObjectType):
         return LogModel.objects.filter(**args).skip(skip).limit(first)
 
     def resolve_blocks(root, info, **args):
-        logging.info(root)
-        logging.info(info)
-        logging.info(args)
-        first = args.get("first", 10)
-        skip = args.get("skip", 0)
+        first = args.get("first")
+        skip = args.get("skip")
         if "first" in args:
             del args["first"]
         if "skip" in args:
             del args["skip"]
-        return BlockModel.objects.filter(**args).skip(skip).limit(first)
+        blocks = BlockModel.objects.filter(**args)
+        if skip:
+            blocks = blocks.skip(skip)
+        if first:
+            blocks = blocks.limit(first)
+        return blocks
 
     def resolve_block_logs(root, info, **args):
         logging.info("asd")
